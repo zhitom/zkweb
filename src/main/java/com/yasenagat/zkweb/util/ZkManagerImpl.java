@@ -151,24 +151,55 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 	public static class ServerStatusByCMD implements ZkState{  
 		private ZkConnectInfo zkConnectInfo;
 		
-		private static final ImmutableMap<String, ImmutableList<String>> cmdKeys=ImmutableMap.of(
+		private static final ImmutableMap<String, ImmutableList<String>> cmdKeys=new ImmutableMap.Builder<String, ImmutableList<String>>()
+				.put(
 				"srvr",ImmutableList.of(
 						"Zookeeper version","Latency min/avg/max","Received","Sent",
-						"Connections","Outstanding","Zxid","Mode",
-						"Node"
-				));
-		private static final ImmutableMap<String, String> cmdFindStr=ImmutableMap.of("srvr",": ");
+						"Connections","Outstanding","Zxid","Mode","Node"))
+				.put("conf",ImmutableList.of()).put("cons",ImmutableList.of())
+				.put("envi",ImmutableList.of()).put("ruok",ImmutableList.of())
+				.put("wchs",ImmutableList.of()).put("wchc",ImmutableList.of())
+				.put("wchp",ImmutableList.of()).put("mntr",ImmutableList.of()).build();
+		private static final ImmutableMap<String, String> cmdFindStr=new ImmutableMap.Builder<String, String>()
+				.put("srvr",": ")
+				.put("conf","=").put("cons","(")
+				.put("envi","=").put("ruok","")
+				.put("wchs","").put("wchc","")
+				.put("wchp","").put("mntr"," ").build();
 	    public ServerStatusByCMD(ZkConnectInfo zkConnectInfo) {
 	    	this.zkConnectInfo=zkConnectInfo;
 		}
-	    private List<PropertyPanel> executeOneCmd(Socket sock,String cmd,String group,boolean simpleFlag) throws IOException{
+	    private List<PropertyPanel> executeOneCmdByWch(Socket sock,String cmd,String group) throws IOException{
 	    	BufferedReader reader = null;  
 	    	List<PropertyPanel> retList=new ArrayList<>();
 	    	try {
-	    	OutputStream outstream = sock.getOutputStream();  
-            // 通过Zookeeper的四字命令获取服务器的状态  
-            outstream.write(cmd.getBytes());  
-            outstream.flush();
+            reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));  
+            
+            String line;  
+            String lines="";
+            PropertyPanel propertyPanel=new PropertyPanel();
+            while ((line = reader.readLine()) != null) {  
+            	List<String> keys=cmdKeys.get(cmd);
+            	if(keys==null) {
+            		continue;
+            	}
+            	lines=lines+line;
+            }  
+            propertyPanel=new PropertyPanel();
+			propertyPanel.setInfo(cmd, lines.trim(),group);
+        	retList.add(propertyPanel);
+            return retList;
+	    	}finally {
+	    		if (reader != null) {  
+	                reader.close();  
+	            } 
+			}
+            
+	    }
+	    private List<PropertyPanel> executeOneCmd(Socket sock,String cmd,String group) throws IOException{
+	    	BufferedReader reader = null;  
+	    	List<PropertyPanel> retList=new ArrayList<>();
+	    	try {
             reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));  
             
             String line;  
@@ -179,19 +210,76 @@ public class ZkManagerImpl implements Watcher,ZkManager {
             		continue;
             	}
             	for(int i=0;i<keys.size();i++) {
+            		if(cmd.equals("ruok")) {
+            			propertyPanel=new PropertyPanel();
+        				propertyPanel.setInfo(keys.get(i), line.trim(),group);
+                    	retList.add(propertyPanel);
+                    	continue;
+            		}
+            		if(cmd.equals("conf")||cmd.equals("cons")||cmd.equals("envi")||cmd.equals("mntr")) {
+        				propertyPanel=new PropertyPanel();
+        				String[] strArray=line.split(cmdFindStr.get(cmd));
+        				if(cmd.equals("cons")) {
+        					String vString=line.replaceFirst(strArray[0]+cmdFindStr.get(cmd), "").trim();
+        					vString=vString.substring(0,vString.length()-1);
+        					if(vString.isEmpty()) {
+        						continue;
+        					}
+        					propertyPanel.setInfo(strArray[0], vString ,group);
+        				}else {
+        					String vString=line.replaceFirst(strArray[0]+cmdFindStr.get(cmd), "").trim();
+        					if(vString.isEmpty()) {
+        						continue;
+        					}
+        					propertyPanel.setInfo(strArray[0],vString,group);
+        				}
+                    	retList.add(propertyPanel);
+            			continue;
+            		}
             		if (line.indexOf(keys.get(i)+cmdFindStr.get(cmd)) != -1) { 
-            			if(simpleFlag) {
-            				if(keys.get(i).equals("Mode")) {
-            					propertyPanel=new PropertyPanel();
-                            	propertyPanel.setInfo(keys.get(i), line.replaceAll(keys.get(i)+cmdFindStr.get(cmd), "").trim(),group);
-                            	retList.add(propertyPanel);
-                            	return retList;
-            				}                        	
-            			}else {
-            				propertyPanel=new PropertyPanel();
-                        	propertyPanel.setInfo(keys.get(i), line.replaceAll(keys.get(i)+cmdFindStr.get(cmd), "").trim(),group);
+        				propertyPanel=new PropertyPanel();
+        				String vString=line.replaceFirst(keys.get(i)+cmdFindStr.get(cmd), "").trim();
+    					if(vString.isEmpty()) {
+    						continue;
+    					}
+                    	propertyPanel.setInfo(keys.get(i), vString,group);
+                    	retList.add(propertyPanel);
+            		}
+            	}
+            }  
+            return retList;
+	    	}finally {
+	    		if (reader != null) {  
+	                reader.close();  
+	            } 
+			}
+            
+	    }
+	    private List<PropertyPanel> executeOneCmdSimple(Socket sock,String cmd,String group) throws IOException{
+	    	BufferedReader reader = null;  
+	    	List<PropertyPanel> retList=new ArrayList<>();
+	    	try {
+	    	reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));  
+            
+            String line;  
+            PropertyPanel propertyPanel=new PropertyPanel();
+            while ((line = reader.readLine()) != null) {  
+            	List<String> keys=cmdKeys.get(cmd);
+            	if(keys==null) {
+            		continue;
+            	}
+            	for(int i=0;i<keys.size();i++) {
+            		if (line.indexOf(keys.get(i)+cmdFindStr.get(cmd)) != -1) { 
+            			if(keys.get(i).equals("Mode")) {
+        					propertyPanel=new PropertyPanel();
+        					String vString=line.replaceFirst(keys.get(i)+cmdFindStr.get(cmd), "").trim();
+        					if(vString.isEmpty()) {
+        						continue;
+        					}
+                        	propertyPanel.setInfo(keys.get(i), vString,group);
                         	retList.add(propertyPanel);
-            			}
+                        	return retList;
+        				}                        	
             			
                     }
             	}
@@ -202,7 +290,6 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 	                reader.close();  
 	            } 
 			}
-            
 	    }
 	    public List<Object> state()  throws IOException, MalformedObjectNameException,  
     	InstanceNotFoundException, IntrospectionException, ReflectionException{  
@@ -214,25 +301,41 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 		public List<Object> innerState(boolean simpleFlag)  throws IOException, MalformedObjectNameException,  
         	InstanceNotFoundException, IntrospectionException, ReflectionException{  
 	        String host;  
-	        int port;  
-	        String cmd;  
+	        int port;
 	        List<Object> retList=new ArrayList<>();
-	        PropertyPanel propertyPanel;
 	        String group;
 	        for(ZkHostPort zkHostPort:zkConnectInfo.getConnectInfo()) {
 		        host=zkHostPort.getHost();
 		        port=zkHostPort.getPort();
-		        Socket sock = new Socket(host, port);
-		        try {  
-		        	cmd="srvr";
-			        group=host+"."+port+"."+cmd;
-			        retList.addAll(executeOneCmd(sock,cmd,group,simpleFlag));
+		        Socket sock=null;
+		        try {
+		        	//cmd="srvr";
+		        	for(String cmd:cmdKeys.keySet()) {
+		        		sock = new Socket(host, port);
+		        		OutputStream outstream = sock.getOutputStream();
+		        		// 通过Zookeeper的四字命令获取服务器的状态  
+			            outstream.write(cmd.getBytes());  
+			            outstream.flush();
+		        		group=host+"."+port+"."+cmd;
+		        		log.info("group="+group);
+				        if(simpleFlag) {
+				        	retList.addAll(executeOneCmdSimple(sock,cmd,group));
+				        	break;
+				        }else {
+				        	if(cmd.equals("wchs")||cmd.equals("wchc")||cmd.equals("wchp")) {
+				        		retList.addAll(executeOneCmdByWch(sock,cmd,group));
+				        	}else {
+				        		retList.addAll(executeOneCmd(sock,cmd,group));
+				        	}			        	
+				        }
+		        	}
 		        } finally {  
-		        	//sock.shutdownOutput(); 
-		            sock.close();
+		        	if(sock!=null) {
+		        		//sock.shutdownOutput(); 
+			            sock.close();
+		        	}		        	
 		        }
 	        }
-	        
 			return retList;  
 	    }
 		

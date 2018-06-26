@@ -68,8 +68,8 @@
 			<p id="jmxpanel"><font color="red"><span data-locale-html="eastindication">请选择一个Zookeeper的连接</span></font></p>
 <!-- 		</div> -->
 		<div id="jmxpropertygrid" class="easyui-propertygrid" 
-		data-options="fitColumns:true,striped:true,pagination:false,pagePosition:'bottom',pageSize:10,sortName:'name',sortable:true,showGroup:true,scrollbarSize:1"
-		style="width:270px;height:320px">  
+		data-options="fitColumns:true,striped:true,pagination:false,pagePosition:'bottom',sortName:'name',sortable:true,showGroup:true,scrollbarSize:1"
+		style="width:270px;height:90%">  
 		</div>
 	</div>  
     
@@ -94,7 +94,7 @@
      </div>
     
      <div data-options="region:'center',split:true,collapsed:false,border:false" >  <!-- height:170px;overflow: hidden; -->
-     
+     	<input type="hidden" id="lastRefreshConn"/>
 		<div class="easyui-tabs" id="zkTab" data-options="tools:'#tab-tools',toolPosition:'right',fit:true" >  
 		<input type="hidden" id="isDelWelcomeTab" value="0"/>
 		    <div id="nodeinfo" title="节点信息" style="padding:10px;">  
@@ -108,9 +108,11 @@
 		    </div>   
 		</div>  
 		<div id="tab-tools">  
+			<a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-tip',iconAlign:'left'"><span data-locale-html="connstaterefresh" >连接状态刷新：</span><span id="connstaterefresh"><font color="red">Disconnect</font></span></a>  
         	<a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add',iconAlign:'left'" onclick="javascript:$('#zkweb_add_node').window('open');" data-locale-attr="addnodetitle" title="在当前节点下增加节点"><span data-locale-html="addnode">增加新节点</span></a>  
         	<a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove',iconAlign:'left'" onclick="remove()" data-locale-attr="addnodetitle" title="删除当前节点"><span data-locale-html="removenode">删除当前节点</span></a>  
     	</div>
+    	ZkConnectState:<span>no</span>
     </div>  
     <!-- add -->
     <div id="zkweb_add_node" class="easyui-window" title="添加节点" data-options="iconCls:'icon-add',modal:true,closed:true,maximizable:false" style="width:500px;padding:10px;">  

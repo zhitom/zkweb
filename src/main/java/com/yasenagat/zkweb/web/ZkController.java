@@ -41,19 +41,34 @@ public class ZkController implements DisposableBean{
 			log.info("queryzNodeInfo : " + path);
 			if(path != null){
 				model.addAttribute("zkpath", path);
-				model.addAttribute("data", ZkCache.get(cacheId).getData(path).trim());
-				model.mergeAttributes(ZkCache.get(cacheId).getNodeMeta(path));
-				model.addAttribute("acls", ZkCache.get(cacheId).getACLs(path));
 				model.addAttribute("path",path);
 				model.addAttribute("cacheId", cacheId);
-			}
+				String data=ZkCache.get(cacheId).getData(path);
+				if(data==null) {
+					return "info";
+				}
+				model.addAttribute("data", ZkCache.get(cacheId).getData(path).trim());
+				model.mergeAttributes(ZkCache.get(cacheId).getNodeMeta(path));
+				model.addAttribute("acls", ZkCache.get(cacheId).getACLs(path));			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "info";
+	}
+	@RequestMapping(value="/queryZKOk")
+	public @ResponseBody String queryZKOk(Model model,@RequestParam(required=true) String cacheId){
+		String exmsg="<font color='red'>Disconnected Or Exception</font>";
+		try {
+			if(ZkCache.get(cacheId).getData("/")!=null)
+				return "<font color='blue'>Connected</font>";
+			else
+				return exmsg;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return "info";
+		return exmsg;
 	}
-	
 	@RequestMapping(value="/queryZKJMXInfo")
 	public @ResponseBody List<Object> queryZKJMXInfo(
 			@RequestParam(required=true) String simpleFlag,

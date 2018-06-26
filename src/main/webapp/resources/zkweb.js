@@ -78,7 +78,15 @@ $(function(){
 					});
 				$('#zkstate_showtype_form input[name="id"]').val(rowData.ID);
 				$('#jmxpanel').remove()
-				
+				$.post("zk/queryZKOk", {cacheId:rowData.ID},function(data){$('#connstaterefresh').html(data);});
+				if($('#lastRefreshConn').val()){
+					clearInterval($('#lastRefreshConn').val());
+					$('#lastRefreshConn').val(null);
+				}
+				ref = setInterval(function(){
+					$.post("zk/queryZKOk", {cacheId:rowData.ID},function(data){$('#connstaterefresh').html(data);});
+					},5000);
+				$('#lastRefreshConn').val(ref);
 			},
 			url:'zkcfg/queryZkCfg?whereSql='+encodeURI(encodeURI($('#filterValue').val())).trim()
 		});
@@ -166,10 +174,15 @@ $(function(){
 // 		        }
 
     			var rootNode=$(this).tree('getRoot');
+    			if(rootNode==null){
+    				localeMessager('alert','title','提示','connstatedisconn','连接未建立！');
+    				return;
+    			}
     			var curNode=$(this).tree('getSelected');
     			if(!node){
     				node=rootNode;
     			}
+    			
     			$(this).tree('select',node.target);
 				$(this).tree('expand',node.target);
 				if(node != rootNode&&node==curNode){
