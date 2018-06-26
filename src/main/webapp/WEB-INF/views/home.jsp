@@ -95,8 +95,9 @@
     
      <div data-options="region:'center',split:true,collapsed:false,border:false" >  <!-- height:170px;overflow: hidden; -->
      	<input type="hidden" id="lastRefreshConn"/>
+    	<input type="hidden" id="isDelWelcomeTab" value="0"/>
 		<div class="easyui-tabs" id="zkTab" data-options="tools:'#tab-tools',toolPosition:'right',fit:true" >  
-		<input type="hidden" id="isDelWelcomeTab" value="0"/>
+		
 		    <div id="nodeinfo" title="节点信息" style="padding:10px;">  
 		    	<p><font color="red">
 		        <ol>
@@ -112,7 +113,6 @@
         	<a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add',iconAlign:'left'" onclick="javascript:$('#zkweb_add_node').window('open');" data-locale-attr="addnodetitle" title="在当前节点下增加节点"><span data-locale-html="addnode">增加新节点</span></a>  
         	<a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove',iconAlign:'left'" onclick="remove()" data-locale-attr="addnodetitle" title="删除当前节点"><span data-locale-html="removenode">删除当前节点</span></a>  
     	</div>
-    	ZkConnectState:<span>no</span>
     </div>  
     <!-- add -->
     <div id="zkweb_add_node" class="easyui-window" title="添加节点" data-options="iconCls:'icon-add',modal:true,closed:true,maximizable:false" style="width:500px;padding:10px;">  

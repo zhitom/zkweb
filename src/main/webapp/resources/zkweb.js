@@ -78,18 +78,21 @@ $(function(){
 					});
 				$('#zkstate_showtype_form input[name="id"]').val(rowData.ID);
 				$('#jmxpanel').remove()
-				$.post("zk/queryZKOk", {cacheId:rowData.ID},function(data){$('#connstaterefresh').html(data);});
-				if($('#lastRefreshConn').val()){
-					clearInterval($('#lastRefreshConn').val());
-					$('#lastRefreshConn').val(null);
-				}
-				ref = setInterval(function(){
-					$.post("zk/queryZKOk", {cacheId:rowData.ID},function(data){$('#connstaterefresh').html(data);});
-					},5000);
-				$('#lastRefreshConn').val(ref);
+				refreshConnectState(rowData);
 			},
 			url:'zkcfg/queryZkCfg?whereSql='+encodeURI(encodeURI($('#filterValue').val())).trim()
 		});
+	}
+	function refreshConnectState(row){
+		$.post("zk/queryZKOk", {cacheId:row.ID},function(data){$('#connstaterefresh').html(data);});
+		if($('#lastRefreshConn').val()){
+			clearInterval($('#lastRefreshConn').val());
+			$('#lastRefreshConn').val(null);
+		}
+		ref = setInterval(function(){
+			$.post("zk/queryZKOk", {cacheId:row.ID},function(data){$('#connstaterefresh').html(data);});
+			},5000);
+		$('#lastRefreshConn').val(ref);
 	}
 	function ZkStateShowTypeChange(node){
     	//alert('hhh:'+node.name+','+node.value);
@@ -195,15 +198,17 @@ $(function(){
 		            }  
 		        }
     			var tab = $('#zkTab').tabs('getTab',row.DESC);
+    			//$.messager.alert('提示','enter onLoadSuccess()！');
     			if(tab != null){
-					//$.messager.alert('提示','enter onLoadSuccess()！');
-					$('#zkTab').tabs('update', {
-						tab: tab,
-						options: {
-							title: row.DESC, //node.text,
-							href: "zk/queryZnodeInfo?path="+encodeURI(encodeURI(_path))+"&cacheId="+cacheId  
-						}
-					});
+					
+//					$('#zkTab').tabs('update', {
+//						tab: tab,
+//						options: {
+//							title: row.DESC, //node.text,
+//							href: "zk/queryZnodeInfo?path="+encodeURI(encodeURI(_path))+"&cacheId="+cacheId  
+//						}
+//					});
+					tab.panel('refresh',"zk/queryZnodeInfo?path="+encodeURI(encodeURI(_path))+"&cacheId="+cacheId);
 				}else {
     				$('#zkTab').tabs('add',{
     					id:rowIndex,
@@ -227,22 +232,29 @@ $(function(){
     			var tab = $('#zkTab').tabs('getTab',row.DESC);
     			//var index = $('#zkTab').tabs('getTabIndex',tab);
     			//alert(index);
+    			//$.messager.alert('提示',tab+'enter onClickSuccess()！'+node.attributes.path);
+    			var _path="/"
+    			if (node&&node.attributes)
+                	 _path = node.attributes.path ;
     			if(tab != null){
     				//tab.title=node.text;
     				//tab.panel('refresh', "zk/queryZnodeInfo?path="+node.attributes.path);
-    				$('#zkTab').tabs('update', {
-    					tab: tab,
-    					options: {
-    						title: row.DESC, //node.text,
-    						href: "zk/queryZnodeInfo?path="+encodeURI(encodeURI(node.attributes.path))+"&cacheId="+cacheId  
-    					}
-    				});
-    			}else {
+//    				$.messager.alert('提示',tab+'enter onClickSuccess()！'+"zk/queryZnodeInfo?path="+encodeURI(encodeURI(node.attributes.path))+"&cacheId="+cacheId );
+//    				$('#zkTab').tabs('update', {
+//    					tab: tab,
+//    					options: {
+//    						title: row.DESC, //node.text,
+//    						href: "zk/queryZnodeInfo?path="+encodeURI(encodeURI(node.attributes.path))+"&cacheId="+cacheId  
+//    					}
+//    				});
+    				tab.panel('refresh',"zk/queryZnodeInfo?path="+encodeURI(encodeURI(_path))+"&cacheId="+cacheId);
+    			}
+    			else {
     				$('#zkTab').tabs('add',{
     					id:rowIndex,
     					title:row.DESC,  
     					closable:true,
-    					href: "zk/queryZnodeInfo?path="+encodeURI(encodeURI(node.attributes.path))+"&cacheId="+cacheId
+    					href: "zk/queryZnodeInfo?path="+encodeURI(encodeURI(_path))+"&cacheId="+cacheId
     	        	});     				
     			}
     			
@@ -275,7 +287,7 @@ $(function(){
              
              if(_cfg){
             	 
-            	 	localeMessager('confirm','title','提示', '','delete this node and all children-nodes: '+node.attributes.path+' ?', function(r){  
+            	 	localeMessager('confirm','title','提示', 'none','delete this node and all children-nodes: '+node.attributes.path+' ?', function(r){  
              	    if (r){  
                          //var s = node.text;  
                          if (node.attributes){  
@@ -283,7 +295,7 @@ $(function(){
                          	 $.post("zk/deleteNode", {path: _path,cacheId:_cfg.ID},
                      				function(data){
                      					//alert("Data Loaded: " + data);
-                         		 		localeMessager('alert','title','提示', '',data+',Delete Done!');
+                         		 		localeMessager('alert','title','提示', 'none',data+',Delete Done!');
                      					//
                      					//var tab = $('#zkTab').tabs('getTab',0);
                      					//alert(tab.title);
@@ -296,14 +308,15 @@ $(function(){
                         				//var tab = $('#zkTab').tabs('getSelected');
                         				var tab = $('#zkTab').tabs('getTab',_cfg.DESC);
                         				cacheId=_cfg.ID;
-                        				localeMessager('alert','title','提示','','enter refreshtab()！'+node.attributes.path);
-                        				$('#zkTab').tabs('update', {
-                        					tab: tab,
-                        					options: {
-                        						title: _cfg.DESC, //node.text,
-                        						href: "zk/queryZnodeInfo?path="+encodeURI(encodeURI(node.attributes.path))+"&cacheId="+cacheId  
-                        					}
-                        				});
+                        				//localeMessager('alert','title','提示','none','enter refreshtab()！'+node.attributes.path);
+//                        				$('#zkTab').tabs('update', {
+//                        					tab: tab,
+//                        					options: {
+//                        						title: _cfg.DESC, //node.text,
+//                        						href: "zk/queryZnodeInfo?path="+encodeURI(encodeURI(node.attributes.path))+"&cacheId="+cacheId  
+//                        					}
+//                        				});
+                        				tab.panel('refresh',"zk/queryZnodeInfo?path="+encodeURI(encodeURI(node.attributes.path))+"&cacheId="+cacheId);
                      				}
                          	);
                          	
@@ -401,8 +414,8 @@ $(function(){
         	$.post("zk/createNode", { nodeName: _nodeName, path: _path,cacheId:_cfg.ID},
     			function(data){
     				//alert("Data Loaded: " + data);
-        			localeMessager('alert','title','提示', '',data+',Add Done!');
-    				$('#w').window('close');
+        			localeMessager('alert','title','提示', 'none',data+',Add Done!');
+    				$('#zkweb_add_node').window('close');
     				$('#zkTree').tree('reload',node.target);
     				$('#zkTree').tree('collapse',node.target);
     				$('#zkTree').tree('expand',node.target);
@@ -427,7 +440,7 @@ $(function(){
 	   			return isValid;	// return false will stop the form submission
 	   		},
 	   		success: function(data){
-	   			localeMessager('alert','title','提示', '',data+',Save Done!');
+	   			localeMessager('alert','title','提示', 'none',data+',Save Done!');
 		    	$('#zkweb_zkcfg').datagrid("reload");
 		    	$('#zkweb_add_cfg').window('close');
 	   			$.messager.progress('close');	// hide progress bar while submit successfully
@@ -449,7 +462,7 @@ $(function(){
 	   			return isValid;	// return false will stop the form submission
 	   		},
 	   		success: function(data){
-	   			localeMessager('alert','title','提示', '',data+',Update Done!');
+	   			localeMessager('alert','title','提示', 'none',data+',Update Done!');
 		    	$('#zkweb_zkcfg').datagrid("reload");
 		    	$('#zkweb_up_cfg').window('close');
 	   			$.messager.progress('close');	// hide progress bar while submit successfully
@@ -480,7 +493,7 @@ $(function(){
                 if (r){  
                     //alert('confirmed:'+r);  
 					$.get('zkcfg/delZkCfg',{id:_cfg.ID},function(data){
-						localeMessager('alert','title','提示', '',data+',Delete Done!');
+						localeMessager('alert','title','提示', 'none',data+',Delete Done!');
 					});
 					$('#zkweb_zkcfg').datagrid("reload");
 					$('#zkTab').tabs('close',0);

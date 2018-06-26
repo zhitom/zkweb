@@ -38,18 +38,22 @@ public class ZkController implements DisposableBean{
 		
 		try {
 			path = URLDecoder.decode(path,"utf-8");
-			log.info("queryzNodeInfo : " + path);
+			log.info("queryzNodeInfo1111 : " + path);
 			if(path != null){
 				model.addAttribute("zkpath", path);
 				model.addAttribute("path",path);
 				model.addAttribute("cacheId", cacheId);
 				String data=ZkCache.get(cacheId).getData(path);
 				if(data==null) {
+					model.addAttribute("data", "");
+					model.addAttribute("acls", "");
 					return "info";
 				}
 				model.addAttribute("data", ZkCache.get(cacheId).getData(path).trim());
 				model.mergeAttributes(ZkCache.get(cacheId).getNodeMeta(path));
-				model.addAttribute("acls", ZkCache.get(cacheId).getACLs(path));			}
+				model.addAttribute("acls", ZkCache.get(cacheId).getACLs(path));			
+			}
+			log.info("model : " + model);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
