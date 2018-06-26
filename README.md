@@ -33,9 +33,11 @@ yasenagat-zkweb svn: [http://code.taobao.org/svn/zkweb/](http://code.taobao.org/
 - 增加zk集群自动检测连接状态功能
 - 前端web增加i18n国际化插件，支持界面英文展示，注：服务端数据未支持国际化。
 
+### screen snapshot
 
+connected: [https://user-images.githubusercontent.com/2204457/41921088-a39f7856-7994-11e8-8620-90cd81dc33ce.png](https://user-images.githubusercontent.com/2204457/41921088-a39f7856-7994-11e8-8620-90cd81dc33ce.png "connected")
 
-
+disconnected: [https://user-images.githubusercontent.com/2204457/41921099-a9d53620-7994-11e8-868c-1da341334184.png](https://user-images.githubusercontent.com/2204457/41921099-a9d53620-7994-11e8-868c-1da341334184.png "disconnected")
 
 
 
