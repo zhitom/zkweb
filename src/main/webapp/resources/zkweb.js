@@ -153,6 +153,11 @@ $(function(){
 					initOneTree(pa.id,_cfg);
 					$('#zkstate_showtype_form input[name="id"]').val(_cfg.ID);
 					ZkStateRefresh(null);
+					refreshConnectState(_cfg);
+					var rootNode=$('#zkTree').tree('getRoot');
+	    			if(rootNode==null){
+	    				localeMessager('alert','title','提示','connstatedisconn','连接未建立！');
+	    			}
 				}
     	    }
     	});

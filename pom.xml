@@ -5,7 +5,7 @@
 	<groupId>com.yasenagat.zkweb</groupId>
 	<artifactId>zkWeb</artifactId>
 	<packaging>war</packaging>
-	<version>1.0</version>
+	<version>v1.1</version>
 
 	<name>zkWeb</name>
 	<url>http://maven.apache.org</url>
