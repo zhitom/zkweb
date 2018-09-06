@@ -129,21 +129,21 @@
         
     </div>
     
-    <div id="zkweb_add_cfg" class="easyui-window" title="添加配置信息" data-options="iconCls:'icon-add',modal:true,closed:true,maximizable:false" style="width:280px;height:170px;padding:10px;">  
+    <div id="zkweb_add_cfg" class="easyui-window" title="添加配置信息" data-options="iconCls:'icon-add',modal:true,closed:true,maximizable:false" style="width:500px;height:170px;padding:10px;">  
         
         <form id="zkweb_add_cfg_form" method="post" action="zkcfg/addZkCfg">  
-		    <table>    
+		    <table width="100%">    
 		        <tr>    
-		            <td>DESC:</td>    
-		            <td><input name="desc" type="text"></input></td>    
+		            <td width="100px">DESC:</td>    
+		            <td ><input name="desc" type="text" style="width:100%"></input></td>    
 		        </tr>    
 		        <tr>    
-		            <td>CONNECTSTR:</td>    
-		            <td><input name="connectstr" type="text"></input></td>    
+		            <td width="100px">CONNECTSTR:</td>    
+		            <td ><input name="connectstr" type="text" style="width:100%"></input></td>    
 		        </tr>    
 		        <tr>    
-		            <td>SESSIONTIMEOUT:</td>    
-		            <td><input name="sessiontimeout" type="text"></input></td>    
+		            <td width="100px">SESSIONTIMEOUT[ms]:</td>    
+		            <td ><input name="sessiontimeout" type="text" style="width:100%"></input></td>    
 		        </tr>    
 		        <tr>    
 		            <td>
@@ -158,22 +158,22 @@
         
     </div>  
     
-    <div id="zkweb_up_cfg" class="easyui-window" title="更新配置信息" data-options="iconCls:'icon-update',modal:true,closed:true,maximizable:false" style="width:280px;height:170px;padding:10px;">  
+    <div id="zkweb_up_cfg" class="easyui-window" title="更新配置信息" data-options="iconCls:'icon-update',modal:true,closed:true,maximizable:false" style="width:500px;height:170px;padding:10px;">  
         
         <form id="zkweb_up_cfg_form" method="post" action="zkcfg/updateZkCfg">  
             <input type="hidden" name="id"/>
-		    <table>    
+		    <table width="100%">    
 		        <tr>    
-		            <td>DESC:</td>    
-		            <td><input name="desc" type="text"></input></td>    
+		            <td width="100px">DESC:</td>    
+		            <td><input name="desc" type="text"  style="width:100%"></input></td>    
 		        </tr>    
 		        <tr>    
-		            <td>CONNECTSTR:</td>    
-		            <td><input name="connectstr" type="text"></input></td>    
+		            <td width="100px">CONNECTSTR:</td>    
+		            <td><input name="connectstr" type="text"  style="width:100%"></input></td>    
 		        </tr>    
 		        <tr>    
-		            <td>SESSIONTIMEOUT:</td>    
-		            <td><input name="sessiontimeout" type="text"></input></td>    
+		            <td width="100px">SESSIONTIMEOUT[ms]:</td>    
+		            <td><input name="sessiontimeout" type="text"  style="width:100%"></input></td>    
 		        </tr>    
 		        <tr>    
 		            <td>

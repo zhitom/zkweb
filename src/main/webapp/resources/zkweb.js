@@ -84,6 +84,7 @@ $(function(){
 		});
 	}
 	function refreshConnectState(row){
+		//return;
 		$.post("zk/queryZKOk", {cacheId:row.ID},function(data){$('#connstaterefresh').html(data);});
 		if($('#lastRefreshConn').val()){
 			clearInterval($('#lastRefreshConn').val());

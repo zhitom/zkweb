@@ -83,6 +83,7 @@ var getLanguageFromCookie=function(language){
 	var webLanguage = ['zh_CN', 'zh_TW', 'en'];
 	if (getCookie(i18nCookiename)) {
         i18nLanguage = getCookie(i18nCookiename);
+        console.log("i18nLanguage1 is "+i18nLanguage);
     } else {
     	if(!language)
     		language=i18nSettings.language;
@@ -93,9 +94,11 @@ var getLanguageFromCookie=function(language){
             var charSize = $.inArray(navLanguage, webLanguage);
             if (charSize > -1) {
                 i18nLanguage = navLanguage;
+                console.log("i18nLanguage2 is "+i18nLanguage);
                 // 存到缓存中
                 getCookie(i18nCookiename,navLanguage);
             };
+            console.log("i18nLanguage3 is "+i18nLanguage);
         } else{
             console.log("not navigator,default is "+i18nLanguage);
             
@@ -118,12 +121,12 @@ var setLanguage=function(node){
 	language=node.value
 	cookielanguage=getCookie(i18nCookiename);
 	if (cookielanguage&&cookielanguage!=language) {
-		console.log('cookielanguage='+cookielanguage+',newlanguage='+language)
+		console.log('1.cookielanguage='+cookielanguage+',newlanguage='+language)
 		getCookie(i18nCookiename,language);
     }else if (cookielanguage&&cookielanguage==language){
-    	console.log('cookielanguage='+cookielanguage+',newlanguage='+language)
+    	console.log('2.cookielanguage='+cookielanguage+',newlanguage='+language)
     }else{
-    	console.log('cookie['+i18nCookiename+']='+language)
+    	console.log('3.cookie['+i18nCookiename+']='+language)
     	getCookie(i18nCookiename,language);
     }
 	console.log('active cookie['+i18nCookiename+']='+getCookie(i18nCookiename))
