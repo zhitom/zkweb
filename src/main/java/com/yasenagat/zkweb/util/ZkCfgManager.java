@@ -5,7 +5,6 @@ import java.util.Map;
 
 public interface ZkCfgManager {
 
-	public boolean init();
 	public boolean add(String desc,String connectStr,String sessionTimeOut);
 	public boolean add(String id,String desc,String connectStr,String sessionTimeOut);
 	public List<Map<String, Object>> query(int page, int rows, String whereSql);

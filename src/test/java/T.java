@@ -159,7 +159,7 @@ public class T {
 		ZkCfgManager zkCfgManager = ZkCfgFactory.createZkCfgManager();
 		
 		try {
-			zkCfgManager.init();
+			//zkCfgManager.init();
 			
 //			for(int i = 0 ; i < 9 ; i ++){
 //				

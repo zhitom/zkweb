@@ -4,27 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.management.ClassLoadingMXBean;
-import java.lang.management.CompilationMXBean;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
-import java.lang.management.ThreadMXBean;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
-import javax.management.JMX;
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -33,8 +21,6 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -43,9 +29,7 @@ import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooDefs.Perms;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
-import org.apache.zookeeper.server.ConnectionMXBean;
-import org.apache.zookeeper.server.DataTreeMXBean;
-import org.apache.zookeeper.server.ZooKeeperServerMXBean;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -54,14 +38,13 @@ import com.yasenagat.zkweb.util.ZkManagerImpl.ZkConnectInfo.ZkHostPort;
 public class ZkManagerImpl implements Watcher,ZkManager {
 
 	private ZooKeeper zk=null;
-	private ZkJMXInfo jmxInfo;
 	private ServerStatusByCMD serverStatusByCMD;
 	private ZkConnectInfo zkConnectInfo=new ZkConnectInfo();
 	private final String ROOT = "/";
-	private static final Log log = LogFactory.getLog(ZkManagerImpl.class);
+	private static final org.slf4j.Logger log = LoggerFactory.getLogger(ZkManagerImpl.class);
 //	private static final ZkManagerImpl _instance = new ZkManagerImpl();
 	public ZkManagerImpl(){
-		jmxInfo=new ZkJMXInfo(zkConnectInfo);
+		new ZkJMXInfo(zkConnectInfo);
 		serverStatusByCMD=new ServerStatusByCMD(zkConnectInfo);
 	}
 	
@@ -117,37 +100,12 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 		}
 	}
 	private interface ZkState{
-		List<Object> state() throws IOException, MalformedObjectNameException,  
+		List<PropertyPanel> state() throws IOException, MalformedObjectNameException,  
         InstanceNotFoundException, IntrospectionException, ReflectionException;
-		List<Object> simpleState() throws IOException, MalformedObjectNameException,  
+		List<PropertyPanel> simpleState() throws IOException, MalformedObjectNameException,  
         InstanceNotFoundException, IntrospectionException, ReflectionException;
 	};
-	public static class PropertyPanel{
-		private String name;
-		private String value;
-		private String group;
-		private String editor="text";
-		public String getName() {
-			return name;
-		}
-		public String getValue() {
-			return value;
-		}
-		public String getGroup() {
-			return group;
-		}
-		public String getEditor() {
-			return editor;
-		}
-		public void setInfo(String name,String value,String group) {
-			this.name = name;
-			this.value = value;
-			this.group = group;
-		}
-		public void setEditor(String editor) {
-			this.editor = editor;
-		}
-	}
+	
 	public static class ServerStatusByCMD implements ZkState{  
 		private ZkConnectInfo zkConnectInfo;
 		
@@ -291,18 +249,18 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 	            } 
 			}
 	    }
-	    public List<Object> state()  throws IOException, MalformedObjectNameException,  
+	    public List<PropertyPanel> state()  throws IOException, MalformedObjectNameException,  
     	InstanceNotFoundException, IntrospectionException, ReflectionException{  
 	    	return innerState(false);
 	    }
-	    public List<Object> simpleState() throws MalformedObjectNameException, InstanceNotFoundException, IntrospectionException, ReflectionException, IOException {
+	    public List<PropertyPanel> simpleState() throws MalformedObjectNameException, InstanceNotFoundException, IntrospectionException, ReflectionException, IOException {
 			return innerState(true);
 		}  
-		public List<Object> innerState(boolean simpleFlag)  throws IOException, MalformedObjectNameException,  
+		public List<PropertyPanel> innerState(boolean simpleFlag)  throws IOException, MalformedObjectNameException,  
         	InstanceNotFoundException, IntrospectionException, ReflectionException{  
 	        String host;  
 	        int port;
-	        List<Object> retList=new ArrayList<>();
+	        List<PropertyPanel> retList=new ArrayList<>();
 	        String group;
 	        for(ZkHostPort zkHostPort:zkConnectInfo.getConnectInfo()) {
 		        host=zkHostPort.getHost();
@@ -342,9 +300,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 	}  
 	public static class ZkJMXInfo {  
 	    private JMXConnector connectorJMX;  
-	    private ZkConnectInfo zkConnectInfo;
 	    public ZkJMXInfo(ZkConnectInfo zkConnectInfo) {
-	    	this.zkConnectInfo=zkConnectInfo;
 		}
 
 		/** 
@@ -546,7 +502,8 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 	     *            - MBean的某个属性名 
 	     * @return 属性值 
 	     */  
-	    private String getAttribute(MBeanServerConnection mbeanServer,  
+	    @SuppressWarnings("unused")
+		private String getAttribute(MBeanServerConnection mbeanServer,  
 	            ObjectName objName, String objAttr) {  
 	        if (mbeanServer == null || objName == null || objAttr == null)  
 	            throw new IllegalArgumentException();  
@@ -603,7 +560,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 //		}
 //	};
 	@Override
-	public List<Object> getJMXInfo(boolean simpleFlag) {
+	public List<PropertyPanel> getJMXInfo(boolean simpleFlag) {
 		try {
 			if(simpleFlag)
 				return serverStatusByCMD.simpleState();
@@ -657,6 +614,9 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 	}
 
 	public String getData(String path) {
+		return getData(path,true);
+	}
+	public String getData(String path,boolean isPrintLog) {
 		try {
 			Stat s = zk.exists(path, false);
 			if (s != null) {
@@ -664,8 +624,9 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 				if(null == b){
 					return "";
 				}
-				log.info("data : "+new String(zk.getData(path, false, s)));
-				return new String(zk.getData(path, false, s));
+				String pathContent=new String(zk.getData(path, false, s));
+				if(isPrintLog)log.info("data[{}] : {}",path,pathContent);
+				return pathContent;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -11,31 +11,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.sql.DataSource;
+
 import org.apache.commons.dbutils.QueryRunner;
-import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.yasenagat.zkweb.web.ZkController;
-
-public class ZkCfgManagerImpl implements ZkCfgManager {
+@Component
+public class ZkCfgManagerImpl implements InitializingBean,ZkCfgManager {
 
 	private static Logger log = LoggerFactory.getLogger(ZkCfgManagerImpl.class);
 //	jdbc:h2:tcp://localhost/~/test
-		
-	private static JdbcConnectionPool cp = JdbcConnectionPool.create("jdbc:h2:~/zkweb","sa","sa");
+	@Autowired
+	private DataSource dataSource;
+	//private JdbcConnectionPool cpool = JdbcConnectionPool.create("jdbc:h2:~/zkweb","sa","sa");
 //	private static JdbcConnectionPool cp = JdbcConnectionPool.create("jdbc:h2:tcp://127.0.0.1/~/zkweb","sa","sa"); 
 	private static Connection conn = null;
 	static QueryRunner run = new QueryRunner(H2Util.getDataSource());
 	
 	public ZkCfgManagerImpl() {
-		cp.setMaxConnections(20);
-		cp.setLoginTimeout(1000 * 50);
-		init();
+		//cpool.setMaxConnections(20);
+		//cpool.setLoginTimeout(1000 * 50);
+		//init();
 	};
 	private Connection getConnection() throws SQLException{
 		if(null == conn){
-			conn = cp.getConnection();
+			conn = dataSource.getConnection();
 		}
 		return conn;
 	}
@@ -53,18 +57,33 @@ public class ZkCfgManagerImpl implements ZkCfgManager {
 	public void destroyPool() {
 		H2Util.destroyDataSource();
 		closeConn();
-		if(cp!=null) {
-			cp.dispose();
-		}
+//		if(cpool!=null) {
+//			cpool.dispose();
+//		}
+
 	}
-	public boolean init() {
+	
+	private boolean init() {
 		if(isTableOk()) {
 			return true;
 		}
+		log.error("create table ({})...",ZkCfgManager.initSql);
 		PreparedStatement ps = null;
 		try {
 			ps = getConnection().prepareStatement(ZkCfgManager.initSql);
-			return ps.executeUpdate()>0;
+			int ret=ps.executeUpdate();
+			if(ret>=0) {
+				log.error("create table OK !ret={}",ret);
+				List<Map<String, Object>> result=query("");
+				if(result==null) {
+					log.error("table select check Error!");
+				}else {
+					log.error("table select check OK!");
+				}
+				return true;
+			}
+			log.error("create table error !ret={}",ret);
+			return false;
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.info("init zkCfg error : {}" , e.getMessage());
@@ -109,10 +128,22 @@ public class ZkCfgManagerImpl implements ZkCfgManager {
 	}
 
 	public List<Map<String, Object>> query() {
+		List<Map<String, Object>> result=query("where not(desc like 'ignore_%')");
+		if(result==null)
+			return new ArrayList<Map<String,Object>>();
+		return result;
+	}
+	public List<Map<String, Object>> queryAll() {
+		List<Map<String, Object>> result=query("");
+		if(result==null)
+			return new ArrayList<Map<String,Object>>();
+		return result;
+	}
+	private List<Map<String, Object>> query(String whereSql) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = getConnection().prepareStatement("SELECT * FROM ZK where not(desc like 'ignore_%')");
+			ps = getConnection().prepareStatement("SELECT * FROM ZK "+whereSql);
 			rs = ps.executeQuery();
 			
 			List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
@@ -151,7 +182,7 @@ public class ZkCfgManagerImpl implements ZkCfgManager {
 			}
 			
 		}
-		return new ArrayList<Map<String,Object>>();
+		return null;
 	}
 
 	public boolean update(String id, String desc, String connectStr,
@@ -376,7 +407,7 @@ public class ZkCfgManagerImpl implements ZkCfgManager {
 			try(PreparedStatement psps = getConnection().prepareStatement("drop table ZK")){
 				psps.execute();
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				//e1.printStackTrace();
 			}
 			return false;
 		} finally {
@@ -395,5 +426,13 @@ public class ZkCfgManagerImpl implements ZkCfgManager {
 				}
 			}
 		}
+	}
+	
+	//@PostConstruct
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		init();
+		ZkCache.init(ZkCfgFactory.createZkCfgManager());
+		log.info(" afterPropertiesSet init {} zk instance" , ZkCache.size());		
 	}
 }

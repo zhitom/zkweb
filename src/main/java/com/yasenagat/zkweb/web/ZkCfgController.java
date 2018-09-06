@@ -20,7 +20,7 @@ import com.yasenagat.zkweb.util.ZkManagerImpl;
 
 @Controller
 @RequestMapping("/zkcfg")
-public class ZkCfgController {
+public class ZkCfgController{
 	
 	private static final Logger log = LoggerFactory.getLogger(ZkCfgController.class);
 

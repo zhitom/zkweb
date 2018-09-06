@@ -1,0 +1,14 @@
+logging: 
+  config: classpath:logback-zkweb.xml
+spring: 
+  h2: 
+    console: 
+      enabled: 'true'
+      path: /console
+      settings: 
+        trace: false
+        web-allow-others: 'true'
+  jta:
+    enabled: false
+  hateoas: 
+    use-hal-as-default-json-media-type: 'false'

@@ -1,9 +1,7 @@
 package com.yasenagat.zkweb.util;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 public interface ZkManager {
 
@@ -18,6 +16,7 @@ public interface ZkManager {
 	public List<String> getChildren(String path);
 
 	public String getData(String path);
+	public String getData(String path, boolean isPrintLog);
 
 	public Map<String, String> getNodeMeta(String nodePath);
 
@@ -56,7 +55,32 @@ public interface ZkManager {
 
 		scheme, id, perms
 	}
-
-	public List<Object> getJMXInfo(boolean simpleFlag);
+	public static class PropertyPanel{
+		private String name;
+		private String value;
+		private String group;
+		private String editor="text";
+		public String getName() {
+			return name;
+		}
+		public String getValue() {
+			return value;
+		}
+		public String getGroup() {
+			return group;
+		}
+		public String getEditor() {
+			return editor;
+		}
+		public void setInfo(String name,String value,String group) {
+			this.name = name;
+			this.value = value;
+			this.group = group;
+		}
+		public void setEditor(String editor) {
+			this.editor = editor;
+		}
+	}
+	public List<PropertyPanel> getJMXInfo(boolean simpleFlag);
 
 }

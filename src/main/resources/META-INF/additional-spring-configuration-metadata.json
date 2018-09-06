@@ -1,0 +1,52 @@
+{"properties": [
+  {
+    "name": "spring.datasource.initial-pool-size",
+    "type": "java.lang.Integer",
+    "description": "A description for 'spring.datasource.initial-pool-size'"
+  },
+  {
+    "name": "spring.datasource.min-pool-size",
+    "type": "java.lang.Integer",
+    "description": "A description for 'spring.datasource.min-pool-size'"
+  },
+  {
+    "name": "spring.datasource.max-pool-size",
+    "type": "java.lang.Integer",
+    "description": "A description for 'spring.datasource.max-pool-size'"
+  },
+  {
+    "name": "spring.datasource.max-pool-size",
+    "type": "java.lang.Integer",
+    "description": "A description for 'spring.datasource.max-pool-size'"
+  },
+  {
+    "name": "spring.datasource.acquire-increment",
+    "type": "java.lang.Integer",
+    "description": "A description for 'spring.datasource.acquire-increment'"
+  },
+  {
+    "name": "spring.datasource.idle-connection-test-period",
+    "type": "java.lang.Integer",
+    "description": "A description for 'spring.datasource.idle-connection-test-period'"
+  },
+  {
+    "name": "spring.datasource.max-idle-time",
+    "type": "java.lang.Integer",
+    "description": "A description for 'spring.datasource.max-idle-time'"
+  },
+  {
+    "name": "spring.datasource.max-statements",
+    "type": "java.lang.Integer",
+    "description": "A description for 'spring.datasource.max-statements'"
+  },
+  {
+    "name": "spring.datasource.acquire-retry-attempts",
+    "type": "java.lang.Integer",
+    "description": "A description for 'spring.datasource.acquire-retry-attempts'"
+  },
+  {
+    "name": "spring.datasource.break-after-acquire-failure",
+    "type": "java.lang.Boolean",
+    "description": "A description for 'spring.datasource.break-after-acquire-failure'"
+  }
+]}

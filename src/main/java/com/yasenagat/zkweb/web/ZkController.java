@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -20,8 +23,7 @@ import com.yasenagat.zkweb.model.Tree;
 import com.yasenagat.zkweb.model.TreeRoot;
 import com.yasenagat.zkweb.util.ZkCache;
 import com.yasenagat.zkweb.util.ZkCfgFactory;
-import com.yasenagat.zkweb.util.ZkCfgManagerImpl;
-import com.yasenagat.zkweb.util.ZkManagerImpl;
+import com.yasenagat.zkweb.util.ZkManager.PropertyPanel;
 
 @Controller
 @RequestMapping("/zk")
@@ -63,20 +65,24 @@ public class ZkController implements DisposableBean{
 	public @ResponseBody String queryZKOk(Model model,@RequestParam(required=true) String cacheId){
 		String exmsg="<font color='red'>Disconnected Or Exception</font>";
 		try {
-			if(ZkCache.get(cacheId).getData("/")!=null)
+			if(ZkCache.get(cacheId).getData("/",false)!=null) {
+				log.info("cacheId[{}] : {}",cacheId,"Connected");
 				return "<font color='blue'>Connected</font>";
-			else
+			}
+			else {
+				log.info("cacheId[{}] : {}",cacheId,"Disconnected Or Exception");
 				return exmsg;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		return exmsg;
 	}
-	@RequestMapping(value="/queryZKJMXInfo")
-	public @ResponseBody List<Object> queryZKJMXInfo(
+	@RequestMapping(value="/queryZKJMXInfo", produces="application/json;charset=UTF-8")
+	public @ResponseBody List<PropertyPanel> queryZKJMXInfo(
 			@RequestParam(required=true) String simpleFlag,
-			@RequestParam(required=true) String cacheId
+			@RequestParam(required=true) String cacheId,HttpServletResponse response
 			){
 		
 		try {
@@ -84,8 +90,9 @@ public class ZkController implements DisposableBean{
 //			//model.addAttribute("acls", ZkCache.get(cacheId).getACLs(path));
 //			//model.addAttribute("path",path);
 //			model.addAttribute("cacheId", cacheId);
-			List<Object> result=ZkCache.get(cacheId).getJMXInfo(Integer.parseInt(simpleFlag)==0?false:true);
-			log.info("simpleFlag={},cacheId={},result : {}",simpleFlag,cacheId,JSON.std.asString(result));
+			List<PropertyPanel> result=ZkCache.get(cacheId).getJMXInfo(Integer.parseInt(simpleFlag)==0?false:true);
+			log.info("queryZKJMXInfo simpleFlag={},cacheId={},result : {}",simpleFlag,cacheId,JSON.std.asString(result));
+			response.addHeader("Access-Control-Allow-Origin", "*");
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();

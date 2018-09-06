@@ -8,21 +8,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.dbutils.ResultSetHandler;
+import javax.sql.DataSource;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class H2Util {
 
-	private static ComboPooledDataSource dataSource = new ComboPooledDataSource();
-
-	public static ComboPooledDataSource getDataSource(){
+	//private static ComboPooledDataSource dataSource = new ComboPooledDataSource();
+	@Autowired
+	private static DataSource dataSource;
+	public static DataSource getDataSource(){
 		
 		return dataSource;
 	}
 	public static void destroyDataSource() {
-		if(dataSource!=null)
-			dataSource.close();
+//		if(dataSource!=null)
+//			dataSource.close();
 	}
 	public static ResultSetHandler<Object[]> objectHandler = new ResultSetHandler<Object[]>() {
 	    public Object[] handle(ResultSet rs) throws SQLException {

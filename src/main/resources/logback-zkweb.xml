@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+级别包括：TRACE、DEBUG(默认)、INFO、WARN 和 ERROR
+scan:
+当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。
+scanPeriod:
+设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。
+debug:
+当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。
+ -->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+<!-- 	通过<property>定义的值会被插入到logger上下文中。定义变量后，可以使“${}”来使用变量。
+		<contextName>myAppName</contextName>  
+		<timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/> 
+		<property name="APP_Name" value="myAppName" />   
+-->
+	<property name="path.log" value="./log" />   
+<!--     <appender name="FILE"   class="ch.qos.logback.core.FileAppender"> -->
+<!--     	<Encoding>UTF-8</Encoding> -->
+<!--         <File>logger-default.log</File> -->
+<!--         <Append>true</Append> -->
+<!--         <layout class="ch.qos.logback.classic.PatternLayout"> -->
+<!--             <Pattern>[%d{yyyy-MM-dd HH:mm:ss} %-5level %thread  %file:%line] %logger{36} -&gt; %msg%n</Pattern> -->
+<!--         </layout> -->
+<!--     </appender> -->
+<!-- MaxHistory是对于%d而言的文件个数 -->
+    <appender name="ROLLING_FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+<!--          <Encoding>UTF-8</Encoding> -->
+<!--          <File>${path.log}/default.log</File> -->
+         <Prudent>true</Prudent>
+         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+             <FileNamePattern>${path.log}/default-%d{yyyy-MM-dd-HH}-%i.log</FileNamePattern>
+             <MaxHistory>30</MaxHistory>
+             <MaxFileSize>10MB</MaxFileSize>
+             <totalSizeCap>10GB</totalSizeCap>  
+         </rollingPolicy>
+         <encoder>
+             <pattern>[%d{yyyy-MM-dd HH:mm:ss} %-5level %thread  %file:%line] %logger{36} --&gt; %msg%n</pattern>
+         </encoder>
+     </appender>
+     <!-- encoder 默认配置为PatternLayoutEncoder -->
+     <appender name="STDOUT"  class="ch.qos.logback.core.ConsoleAppender" >
+         <encoder>
+             <pattern>[%d{yyyy-MM-dd HH:mm:ss} %-5level %thread  %file:%line] %logger{36} --&gt; %msg%n</pattern>
+         </encoder>
+
+     </appender>
+	<!-- logback为java中的包 -->   
+  <logger name="Logback">   
+  		<level value="WARN" /><!-- "TRACE", "DEBUG" -->
+  </logger> 
+  <!--类的全路径:过滤下面的信息 -->
+  <logger name="ch.qos.logback" level="WARN" additivity="true" />  
+  <logger name="ch.qos.logback.classic.LoggerContext" level="INFO" additivity="true" />  
+  <logger name="org.apache.zookeeper.server.ZooKeeperServer" level="WARN" additivity="true" />  
+  <logger name="org.apache.zookeeper.ZooKeeper" level="WARN" additivity="true" />  
+  <logger name="org.apache.zookeeper.ClientCnxn" level="WARN" additivity="true" />  
+  <logger name="org.apache.curator" level="WARN" additivity="true" />
+  <logger name="org.apache.curator" level="WARN" additivity="true" />
+  <logger name="org.apache.kafka.common.consumer.internals.Fetcher" level="WARN" additivity="true" />  
+  <logger name="org.apache.ibatis" level="WARN" additivity="true" />  
+  <logger name="com.yasenagat.zkweb" level="INFO" additivity="true" />
+  <!-- sql debug info，和mybatis-config.xml的logPrefix配合使用-->
+  <logger name="mybatis" level="WARN" additivity="true" />  
+  <!--trace,debug,info,warn,error-->
+  <root level="info">
+        <appender-ref ref="ROLLING_FILE" />
+        <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
