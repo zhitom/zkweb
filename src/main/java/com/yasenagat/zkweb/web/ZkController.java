@@ -75,6 +75,7 @@ public class ZkController implements DisposableBean{
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			log.info("cacheId[{}] : {}",cacheId,"Disconnected Or Exception");
 		}
 		
 		return exmsg;

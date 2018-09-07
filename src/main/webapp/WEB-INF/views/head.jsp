@@ -11,7 +11,8 @@
 <!-- <meta id="i18n_pagename" content="strings"> -->
 	<link rel="stylesheet" type="text/css" href="resources/easyui/themes/default/easyui.css">
 	<link rel="stylesheet" type="text/css" href="resources/easyui/themes/icon.css">
-	
+	<link rel="shortcut icon" href="resources/favicon.ico"/>
+	<link rel="bookmark" href="resources/favicon.ico"/>
 	<script type="text/javascript" src="resources/easyui/jquery.min.js"></script>
 	<script type="text/javascript" src="resources/easyui/jquery.easyui.min.js"></script>
 <!--  	<script type="text/javascript" src="resources/easyui/locale/easyui-lang-zh_CN.js"></script> -->
