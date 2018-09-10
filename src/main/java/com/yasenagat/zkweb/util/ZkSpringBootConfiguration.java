@@ -57,14 +57,14 @@ public class ZkSpringBootConfiguration implements WebMvcConfigurer {
     
     @Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-    	registry.addViewController("/").setViewName("/home");
+    	registry.addViewController("/").setViewName("home");
 	}
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**").addResourceLocations("classpath:/resources/",
-        		"classpath:/META-INF/resources/webapp/resources/");//,"classpath:/resources/webapp/WEB-INF/views/");
+        registry.addResourceHandler("/resources/**").addResourceLocations("classpath:/resources/");//,"classpath:/resources/webapp/WEB-INF/views/");
         //registry.addResourceHandler("/**");
+        //registry.addResourceHandler("/resources/**").addResourceLocations("classpath:/static/");
     }
     
     @Bean

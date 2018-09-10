@@ -31,27 +31,27 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<!-- 从target打成war包时的过滤,基准目录是target/zkWeb-v1.1 下面已经过滤了,这里无需再次过滤-->
-					<!-- <packagingExcludes>resources/**</packagingExcludes> -->
-					<!-- 从target打成war包时的过滤 ,基准目录是${basedir}/src/main/webapp -->
-					<warSourceExcludes>resources/**</warSourceExcludes>
-					<webResources>
+<!-- 				<configuration> -->
+<!-- 					从target打成war包时的过滤,基准目录是target/zkWeb-v1.1 下面已经过滤了,这里无需再次过滤 -->
+<!-- 					<packagingExcludes>resources/**</packagingExcludes> -->
+<!-- 					从target打成war包时的过滤 ,基准目录是${basedir}/src/main/webapp -->
+<!-- 					<warSourceExcludes>resources/**</warSourceExcludes> -->
+<!-- 					<webResources> -->
 <!-- 			            <resource> -->
 <!-- 			                <directory>src/main/resources/config/${package.environment}</directory> -->
 <!-- 			                <targetPath>WEB-INF/classes/config</targetPath> -->
 <!-- 			                <filtering>true</filtering> -->
 <!-- 			            </resource> -->
-			            <resource>
-			                <directory>${basedir}/src/main/webapp/resources</directory>
-		                    <!--注意此次必须要放在此目录下才能被访问到jsp-->
-			                <targetPath>WEB-INF/classes/resources/</targetPath> 
-			                <includes>
-			                    <include>**/**</include>
-			                </includes>
-			            </resource>
-			        </webResources>
-				</configuration>
+<!-- 			            <resource> -->
+<!-- 			                <directory>${basedir}/src/main/webapp/resources</directory> -->
+<!-- 		                    注意此次必须要放在此目录下才能被访问到jsp -->
+<!-- 			                <targetPath>WEB-INF/classes/resources/</targetPath>  -->
+<!-- 			                <includes> -->
+<!-- 			                    <include>**/**</include> -->
+<!-- 			                </includes> -->
+<!-- 			            </resource> -->
+<!-- 			        </webResources> -->
+<!-- 				</configuration> -->
 			</plugin>
 		</plugins>
 	</build>
@@ -63,6 +63,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
 <!-- 		<dependency> -->
 <!-- 			<groupId>org.springframework.boot</groupId> -->
 <!-- 			<artifactId>spring-boot-starter-data-jpa</artifactId> -->
@@ -127,15 +131,15 @@
 			<artifactId>jackson-jr-all</artifactId>
 		</dependency>
 		<!-- servlet -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>3.0-alpha-1</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> -->
 		
 		<!-- JSP依赖 -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
 			<scope>provided</scope> 
@@ -143,7 +147,7 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<!-- Zookeeper -->
 		<dependency>

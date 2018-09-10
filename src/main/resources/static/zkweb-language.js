@@ -1,7 +1,7 @@
 var i18nCookiename='zkwebLanguage';
 var i18nSettings={    
         name:'strings',    //属性文件名     命名格式： 文件名_国家代号.properties  
-        path:'resources/locale/',   //注意这里路径是你属性文件的所在文件夹  
+        path:'locale/',   //注意这里路径是你属性文件的所在文件夹  
         mode:'map',    
         language:$.i18n.normaliseLanguageCode({language:""}), //$.i18n.browserLang(),     //这就是国家代号 name+language刚好组成属性文件名：strings+zh -> strings_zh.properties  
         callback:function(){
@@ -135,8 +135,8 @@ var setLanguage=function(node){
 }
 
 function loadScript(language){
-	//resources/easyui/locale/easyui-lang-zh_CN.js
-    var src = 'resources/easyui/locale' + '/easyui-lang-'+language.replace("-","_")+'.js';// when login in China the language=zh-CN     
+	//easyui/locale/easyui-lang-zh_CN.js
+    var src = 'easyui/locale' + '/easyui-lang-'+language.replace("-","_")+'.js';// when login in China the language=zh-CN     
     $.getScript(src,function(response,status){
     	console.log("Script loaded and executed.src="+src+",status="+status);
     });

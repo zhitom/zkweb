@@ -1,18 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-
-<jsp:include page="head.jsp"></jsp:include>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>ZkWeb For Zookeeper</title>
-
-<script type="text/javascript" src="resources/zkweb.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="head :: header">
 </head>
-
-
 <body class="easyui-layout" id="zkweb_body">  
+<script type="text/javascript" th:src="@{zkweb.js}"></script>
 
     <div data-options="region:'north',split:true,collapsed:false,border:false,title:'ZK连接配置'" style="height:200px;">
     

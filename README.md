@@ -20,7 +20,7 @@ yasenagat-zkweb svn: [http://code.taobao.org/svn/zkweb/](http://code.taobao.org/
 - Front-end web add i18n Internationalization plugin，Support english and zh_CN，and server-end data don't added this.
 - Upgrade to use spring boot 2
 - Add favicon.ico
-- Todo: jsp -> Thymeleaf
+- jsp -> Thymeleaf
 
 ## zkWeb-zh_CN
 zookeeper web管理和监控界面，使用内置的H2数据库，此版本基于淘宝大神yasenagat的zkWeb源码基础之上进行了大幅升级和修改，有两种运行方式:
@@ -43,7 +43,7 @@ yasenagat-zkweb svn: [http://code.taobao.org/svn/zkweb/](http://code.taobao.org/
 - 前端web增加i18n国际化插件，支持界面英文展示，注：服务端数据未支持国际化。
 - 使用spring boot 2升级改造,可以不依赖tomcat
 - 增加了浏览器图标favicon.ico
-- Todo: jsp -> Thymeleaf
+- jsp -> Thymeleaf
 
 ### screen snapshot
 
@@ -58,4 +58,9 @@ disconnected: [https://user-images.githubusercontent.com/2204457/41921099-a9d536
         		"classpath:/META-INF/resources/webapp/resources/");`
 
 - 打war包,webapp/resources被默认打包到根目录下导致无法访问,需要打包到WEB-INF/classes/resources
+
+- 改造为使用Thymeleaf模版后,目前已经将webapp目录移除了
+- pom-jar.xml for jar,pom-tomcat.xml for tomcat
+
+
 
