@@ -262,38 +262,44 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 	        int port;
 	        List<PropertyPanel> retList=new ArrayList<>();
 	        String group;
-	        for(ZkHostPort zkHostPort:zkConnectInfo.getConnectInfo()) {
-		        host=zkHostPort.getHost();
-		        port=zkHostPort.getPort();
-		        Socket sock=null;
-		        try {
-		        	//cmd="srvr";
-		        	for(String cmd:cmdKeys.keySet()) {
-		        		sock = new Socket(host, port);
-		        		OutputStream outstream = sock.getOutputStream();
-		        		// 通过Zookeeper的四字命令获取服务器的状态  
-			            outstream.write(cmd.getBytes());  
-			            outstream.flush();
-		        		group=host+"."+port+"."+cmd;
-		        		log.info("group="+group);
-				        if(simpleFlag) {
-				        	retList.addAll(executeOneCmdSimple(sock,cmd,group));
-				        	break;
-				        }else {
-				        	if(cmd.equals("wchs")||cmd.equals("wchc")||cmd.equals("wchp")) {
-				        		retList.addAll(executeOneCmdByWch(sock,cmd,group));
-				        	}else {
-				        		retList.addAll(executeOneCmd(sock,cmd,group));
-				        	}			        	
-				        }
-		        	}
-		        } finally {  
-		        	if(sock!=null) {
-		        		//sock.shutdownOutput(); 
-			            sock.close();
-		        	}		        	
-		        }
-	        }
+			for (ZkHostPort zkHostPort : zkConnectInfo.getConnectInfo()) {
+				host = zkHostPort.getHost();
+				port = zkHostPort.getPort();
+				Socket sock = null;
+
+				// cmd="srvr";
+				for (String cmd : cmdKeys.keySet()) {
+					try {
+						sock = new Socket(host, port);
+						OutputStream outstream = sock.getOutputStream();
+						// 通过Zookeeper的四字命令获取服务器的状态
+						outstream.write(cmd.getBytes());
+						outstream.flush();
+						group = host + "." + port + "." + cmd;
+						log.info("group=" + group);
+						if (simpleFlag) {
+							retList.addAll(executeOneCmdSimple(sock, cmd, group));
+							break;
+						} else {
+							if (cmd.equals("wchs") || cmd.equals("wchc") || cmd.equals("wchp")) {
+								retList.addAll(executeOneCmdByWch(sock, cmd, group));
+							} else {
+								retList.addAll(executeOneCmd(sock, cmd, group));
+							}
+						}
+					} catch (Exception e) {
+						sock = null;
+						e.printStackTrace();
+						log.error("zk open error for state(four cmd): echo {} |nc {} {}",cmd,host, port,e);
+						break;
+					} finally {
+						if (sock != null) {
+							// sock.shutdownOutput();
+							sock.close();
+						}
+					}
+				}
+			}
 			return retList;  
 	    }
 		
