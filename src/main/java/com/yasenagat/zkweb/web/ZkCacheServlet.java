@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.yasenagat.zkweb.util.ZkCache;
 import com.yasenagat.zkweb.util.ZkCfgFactory;
+import com.yasenagat.zkweb.util.ZkManager;
 import com.yasenagat.zkweb.util.ZkManagerImpl;
 
 @WebServlet(name = "cacheServlet",urlPatterns = "/cache/*")
@@ -39,14 +40,21 @@ public class ZkCacheServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		ZkManager zkManager;
 		for(Map<String , Object> m : ZkCfgFactory.createZkCfgManager().query()){
-			log.info("ID : {},CONNECTSTR : {},SESSIONTIMEOUT : {}",new Object[]{m.get("ID"),m.get("CONNECTSTR"),m.get("SESSIONTIMEOUT")});
-			ZkCache.put(m.get("ID").toString(), ZkManagerImpl.createZk().connect(m.get("CONNECTSTR").toString(), Integer.parseInt(m.get("SESSIONTIMEOUT").toString())));
+			zkManager=ZkCache.get(m.get("ID").toString());
+			if(zkManager==null) {
+				log.info("zk info: id={},connectstr={},timeout={}",m.get("ID"),m.get("CONNECTSTR"),m.get("SESSIONTIMEOUT"));
+				ZkCache.put(m.get("ID").toString(), ZkManagerImpl.createZk().connect(m.get("CONNECTSTR").toString(), Integer.parseInt(m.get("SESSIONTIMEOUT").toString())));
+			}else {
+				log.info("zk(exists) info: id={},connectstr={},timeout={}",m.get("ID"),m.get("CONNECTSTR"),m.get("SESSIONTIMEOUT"));
+				zkManager.reconnect();
+			}
 		}
 		
-		for(String key : ZkCache.get_cache().keySet()){
-			log.info("key : {} , zk : {}",key,ZkCache.get(key));
-		}
+		//for(String key : ZkCache.get_cache().keySet()){
+		//	log.info("key : {} , zk : {}",key,ZkCache.get(key));
+		//}
 	}
 	
 	@Override

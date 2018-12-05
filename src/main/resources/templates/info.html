@@ -63,8 +63,8 @@ body {
 			</td>
 			<td align="left" valign="top" rowspan="2">
 				<form id="ff" action="zk/saveData" method="post">
-			    <input type="hidden" value="${cacheId}" name="cacheId" />
-			    <input type="hidden" value="${path}" name="path" />
+			    <input type="hidden" th:value="${cacheId}" name="cacheId" />
+			    <input type="hidden" th:value="${path}" name="path" />
 				<table border=0 cellspacing="0">
 			    	<tr>
 			    	<td><b><font color="blue"><label>Node Data</label></font></b></td>

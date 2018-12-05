@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yasenagat.zkweb.util.ZkCache;
 import com.yasenagat.zkweb.util.ZkCfgFactory;
 import com.yasenagat.zkweb.util.ZkCfgManager;
+import com.yasenagat.zkweb.util.ZkManager;
 import com.yasenagat.zkweb.util.ZkManagerImpl;
 
 @Controller
@@ -53,8 +54,17 @@ public class ZkCfgController{
 		try {
 			//String id = UUID.randomUUID().toString().replaceAll("-", "");
 			String id = UUID.randomUUID().toString();
+			ZkManager zkManager;
 			if(ZkCfgFactory.createZkCfgManager().add(id,desc, connectstr, sessiontimeout)){
-				ZkCache.put(id, ZkManagerImpl.createZk().connect(connectstr,Integer.parseInt(sessiontimeout)));
+				zkManager=ZkCache.get(id);
+				if(zkManager==null) {
+					log.info("zk info: id={},connectstr={},timeout={}",id,connectstr, sessiontimeout);
+					ZkCache.put(id, ZkManagerImpl.createZk().connect(connectstr,Integer.parseInt(sessiontimeout)));
+				}else {
+					log.info("zk(exists) info: id={},connectstr={},timeout={}",id,connectstr, sessiontimeout);
+					zkManager.reconnect();
+				}
+				
 			};
 			
 		} catch (Exception e) {
@@ -86,8 +96,16 @@ public class ZkCfgController{
 			@RequestParam(required=false) String sessiontimeout){
 		
 		try {
+			ZkManager zkManager;
 			if(ZkCfgFactory.createZkCfgManager().update(id,desc, connectstr, sessiontimeout)){
-				ZkCache.put(id, ZkManagerImpl.createZk().connect(connectstr,Integer.parseInt(sessiontimeout)));
+				zkManager=ZkCache.get(id);
+				if(zkManager==null) {
+					log.info("zk info: id={},connectstr={},timeout={}",id,connectstr, sessiontimeout);
+					ZkCache.put(id, ZkManagerImpl.createZk().connect(connectstr,Integer.parseInt(sessiontimeout)));
+				}else {
+					log.info("zk(exists) info: id={},connectstr={},timeout={}",id,connectstr, sessiontimeout);
+					zkManager.reconnect();
+				}
 			};
 			
 		} catch (Exception e) {
