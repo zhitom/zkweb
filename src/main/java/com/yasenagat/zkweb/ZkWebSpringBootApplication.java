@@ -3,7 +3,6 @@ package com.yasenagat.zkweb;
  * 
  */
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
@@ -35,6 +34,8 @@ public class ZkWebSpringBootApplication extends SpringBootServletInitializer{
         return application.sources(ZkWebSpringBootApplication.class);
     }
     public static void main(String[] args) {
-        SpringApplication.run(ZkWebSpringBootApplication.class, args);
+    	new SpringApplicationBuilder(ZkWebSpringBootApplication.class).
+    		properties("spring.config.location=classpath:application-zkweb.yaml").run(args);
+    	//SpringApplication.run(ZkWebSpringBootApplication.class, args);
     }
 }
