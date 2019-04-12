@@ -46,7 +46,7 @@ spring:
   datasource:
     platform: h2
     type: com.mchange.v2.c3p0.ComboPooledDataSource
-    url: jdbc:h2:file:~/.h2/zkweb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;FILE_LOCK=SOCKET
+    url: jdbc:h2:file:~/.h2/zkweb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE;FILE_LOCK=SOCKET
     username: sa
     password: sa
     driver-class-name: org.h2.Driver

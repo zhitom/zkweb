@@ -72,7 +72,7 @@ public class ZkController implements DisposableBean{
 		String exmsg="<font color='red'>Disconnected Or Exception</font>";
 		try {
 			if(ZkCache.get(cacheId).getData("/",false)!=null) {
-				log.info("cacheId[{}] : {}",cacheId,"Connected");
+				//log.info("cacheId[{}] : {}",cacheId,"Connected");
 				return "<font color='blue'>Connected</font>";
 			}
 			else {
@@ -127,26 +127,30 @@ public class ZkController implements DisposableBean{
 			root.remove(0);
 			List<String> pathList = ZkCache.get(cacheId).getChildren(null);
 			log.info("list {}",pathList);
+			int i=10000;
 			for(String p : pathList){
 				Map<String, Object> atr = new HashMap<String, Object>();
 				atr.put("path", "/"+p);
-				Tree tree = new Tree(0,p,Tree.STATE_CLOSED,null,atr);
+				Tree tree = new Tree(i,p,Tree.STATE_CLOSED,null,atr);
 				root.add(tree);
+				i++;
 			}
 		}else {
 			root.remove(0);
 			try {
 				path = URLDecoder.decode(path,"utf-8");
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("",e);
 			}
 			List<String> pathList = ZkCache.get(cacheId).getChildren(path);
+			
+			int i=path.split("/").length*10000;
 			for(String p : pathList){
 				Map<String, Object> atr = new HashMap<String, Object>();
 				atr.put("path", path+"/"+p);
-				Tree tree = new Tree(0,p,Tree.STATE_CLOSED,null,atr);
+				Tree tree = new Tree(i,p,Tree.STATE_CLOSED,null,atr);
 				root.add(tree);
+				i++;
 			}
 		}
 

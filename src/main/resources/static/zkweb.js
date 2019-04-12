@@ -1,4 +1,5 @@
 $(function(){
+		//var lastpathid=null;
 		initDataGrid();
 		$('#millisecs').numberspinner({
 			onSpinUp:function(){
@@ -166,9 +167,10 @@ $(function(){
     }
     function initOneTree(rowIndex,row){
     	cacheId=row.ID
+    	
     	$('#zkTree').tree({
     		checkbox: false,
-    		url: "zk/queryZnode?cacheId="+cacheId,
+    		url: "zk/queryZnode?id="+encodeURI(encodeURI('0'))+"&cacheId="+cacheId,
     		animate:true,
     		lines:true,
     		onLoadSuccess: function(node, data){//node为加载完毕的父节点,data是加载好的子节点列表
@@ -191,16 +193,17 @@ $(function(){
     			if(!node){
     				node=rootNode;
     			}
-    			
-    			$(this).tree('select',node.target);
-				$(this).tree('expand',node.target);
-				if(node != rootNode&&node==curNode){
+    			var trueselectnode=node
+    			//$(this).tree('expandTo',trueselectnode.target);
+     			$(this).tree('expand',trueselectnode.target);
+				$(this).tree('select',trueselectnode.target);
+				if(node != rootNode&&trueselectnode==curNode){
 					return;
     			}
 				var _path = "/";
-		    	if (node){  
-		            if (node.attributes){  
-		            	 _path = node.attributes.path ;
+		    	if (trueselectnode){  
+		            if (trueselectnode.attributes&&trueselectnode.attributes.path){  
+		            	 _path = trueselectnode.attributes.path ;
 		            }  
 		        }
     			var tab = $('#zkTab').tabs('getTab',row.DESC);
@@ -234,13 +237,14 @@ $(function(){
                 });  
             },
     		onClick:function(node){
+    			$(this).tree('reload',node.target);
     			//var tab = $('#zkTab').tabs('getSelected');
     			var tab = $('#zkTab').tabs('getTab',row.DESC);
     			//var index = $('#zkTab').tabs('getTabIndex',tab);
     			//alert(index);
     			//$.messager.alert('提示',tab+'enter onClickSuccess()！'+node.attributes.path);
     			var _path="/"
-    			if (node&&node.attributes)
+				if (node&&node.attributes)
                 	 _path = node.attributes.path ;
     			if(tab != null){
     				//tab.title=node.text;
@@ -266,8 +270,10 @@ $(function(){
     			
     		},
     		onBeforeExpand:function(node,param){
-    			if(node.attributes != null){
-    				$('#zkTree').tree('options').url = "zk/queryZnode?path="+encodeURI(encodeURI(node.attributes.path))+"&cacheId="+cacheId; 
+    			
+    			if(node&&node.attributes != null){
+    				$(this).tree('options').url = "zk/queryZnode?id="+encodeURI(encodeURI(node.id))+"&path="+encodeURI(encodeURI(node.attributes.path))+"&cacheId="+cacheId;
+    				//console.log('onBeforeExpand：node.id='+node.id)
     			}
     		}
     	});
@@ -354,6 +360,13 @@ $(function(){
     function collapse(){  
         var node = $('#zkTree').tree('getSelected');  
         $('#zkTree').tree('collapse',node.target);  
+    }  
+    
+    function refreshtree(){  
+        var node = $('#zkTree').tree('getSelected');  
+        $('#zkTree').tree('reload',node.target);//onLoadSuccess 里边 实现
+        $('#zkTree').tree('collapse',node.target);
+        $('#zkTree').tree('expand',node.target);  
     }  
 
 
