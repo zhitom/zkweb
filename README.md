@@ -62,8 +62,10 @@ disconnected: [https://user-images.githubusercontent.com/2204457/41921099-a9d536
 - 改造为使用Thymeleaf模版后,目前已经将webapp目录移除了
 - pom-jar.xml for jar,pom-tomcat.xml for tomcat
 
+## docker 打包
+参考src下的Dockerfile文件中的使用说明
 ## TODO
 
-- docker实现
+
 - 使用curator代替原生zk
 
