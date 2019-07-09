@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -649,10 +651,13 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 			}
 			Stat s = zk.exists(nodePath, false);
 			if (s != null) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String timeStr;
 				nodeMeta.put(Meta.aversion.toString(),
 						String.valueOf(s.getAversion()));
+				timeStr = sdf.format(new Date(s.getCtime()));
 				nodeMeta.put(Meta.ctime.toString(),
-						String.valueOf(s.getCtime()));
+						timeStr+" ["+String.valueOf(s.getCtime())+"]");
 				nodeMeta.put(Meta.cversion.toString(),
 						String.valueOf(s.getCversion()));
 				nodeMeta.put(Meta.czxid.toString(),
@@ -661,8 +666,9 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 						String.valueOf(s.getDataLength()));
 				nodeMeta.put(Meta.ephemeralOwner.toString(),
 						String.valueOf(s.getEphemeralOwner()));
+				timeStr = sdf.format(new Date(s.getMtime()));
 				nodeMeta.put(Meta.mtime.toString(),
-						String.valueOf(s.getMtime()));
+						timeStr+" ["+String.valueOf(s.getMtime())+"]");
 				nodeMeta.put(Meta.mzxid.toString(),
 						String.valueOf(s.getMzxid()));
 				nodeMeta.put(Meta.numChildren.toString(),
