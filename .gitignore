@@ -39,3 +39,4 @@ hs_err_pid*
 /.settings/org.springframework.ide.eclipse.beans.core.prefs
 /.settings/org.springframework.ide.eclipse.core.prefs
 /.springBeans
+/.apt_generated_tests/

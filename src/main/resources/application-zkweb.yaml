@@ -1,6 +1,6 @@
-#
+#如果部署到tomcat,logbak必须是logback-spring.xml名称
 logging: 
-  config: classpath:logback-zkweb.xml
+  config: classpath:logback-spring.xml
 spring: 
   h2: 
     console: 

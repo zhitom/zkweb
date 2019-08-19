@@ -62,6 +62,8 @@ debug:
   <logger name="com.yasenagat.zkweb" level="INFO" additivity="true" />
   <!-- sql debug info，和mybatis-config.xml的logPrefix配合使用-->
   <logger name="mybatis" level="WARN" additivity="true" />  
+  <logger name="com.yasenagat.zkweb.web.ZkController" level="WARN" additivity="true" />  
+  <logger name="com.yasenagat.zkweb.util.ZkManagerImpl" level="WARN" additivity="true" />  
   <!--trace,debug,info,warn,error-->
   <root level="info">
         <appender-ref ref="ROLLING_FILE" />

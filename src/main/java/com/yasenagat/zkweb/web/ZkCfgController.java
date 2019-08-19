@@ -1,7 +1,6 @@
 package com.yasenagat.zkweb.web;
 
 import java.net.URLDecoder;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -33,7 +32,7 @@ public class ZkCfgController{
 			@RequestParam(required=false) int rows,@RequestParam(required=false) String whereSql){
 		
 		try {
-			log.info(new Date()+"");
+			//log.info(new Date()+"");
 			Map<String, Object> _map = new HashMap<String, Object>();
 			_map.put("rows", zkCfgManager.query(page,rows,URLDecoder.decode(whereSql,"utf-8")));
 			_map.put("total", zkCfgManager.count());

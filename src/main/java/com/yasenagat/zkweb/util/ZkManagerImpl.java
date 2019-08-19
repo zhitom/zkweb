@@ -291,7 +291,8 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 						}
 					} catch (Exception e) {
 						sock = null;
-						e.printStackTrace();
+						//e.printStackTrace();
+						log.info("",e);
 						log.error("zk open error for state(four cmd): echo {} |nc {} {}",cmd,host, port,e);
 						break;
 					} finally {
@@ -491,8 +492,8 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 	            return mbsc;  
 	  
 	        } catch (IOException ioe) {  
-	            ioe.printStackTrace();  
-	            System.err.println(ip + ":" + jmxport + " 连接建立失败");  
+	        	log.info("",ioe);
+	            log.error(ip + ":" + jmxport + " 连接建立失败");  
 	        }  
 	        return null;  
 	    }  
@@ -528,7 +529,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 //			return this.connect(p.getProperty(P.host.toString()), (Integer
 //					.valueOf(p.getProperty(P.sessionTimeOut.toString()))));
 //		} catch (Exception e) {
-//			e.printStackTrace();
+//			log.info("",e);
 //			return false;
 //		}
 //	};
@@ -539,7 +540,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 //				zk = new ZooKeeper(host, timeout, this);
 //			}
 //		} catch (Exception e) {
-//			e.printStackTrace();
+//			log.info("",e);
 //			return false;
 //		}
 //		return true;
@@ -552,7 +553,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 //			return this.connect(p.getProperty(P.host.toString()), (Integer
 //					.valueOf(p.getProperty(P.sessionTimeOut.toString()))));
 //		} catch (Exception e) {
-//			e.printStackTrace();
+//			log.info("",e);
 //			return this;
 //		}
 //	};
@@ -563,7 +564,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 //			return this.connect(p.getProperty(P.host.toString()), (Integer
 //					.valueOf(p.getProperty(P.sessionTimeOut.toString()))));
 //		} catch (Exception e) {
-//			e.printStackTrace();
+//			log.info("",e);
 //			return this;
 //		}
 //	};
@@ -576,7 +577,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 			return serverStatusByCMD.state();
 		} catch (MalformedObjectNameException | InstanceNotFoundException | IntrospectionException | ReflectionException
 				| IOException e) {
-			e.printStackTrace();
+			log.info("",e);
 		}
 		return Collections.emptyList();
 	}
@@ -589,7 +590,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 				zk = new ZooKeeper(host, timeout, this);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.info("",e);
 		}
 		return this;
 	}
@@ -601,7 +602,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 				zk = null;
 				return true;
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				log.info("",e);
 				return false;
 			}
 		} else {
@@ -615,7 +616,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 		try {
 			return zk.getChildren(path == null ? ROOT : path, false);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.info("",e);
 			reconnect();
 		}
 		return new ArrayList<String>();
@@ -637,7 +638,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 				return pathContent;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.info("",e);
 			reconnect();
 		}
 		return null;
@@ -739,8 +740,8 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("",e);
+			log.info("",e);
+			//log.error("",e);
 			reconnect();
 		}
 		return returnACLs;
@@ -762,8 +763,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 			}
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("",e);
+			log.info("",e);
 			reconnect();
 		}
 		return false;
@@ -782,8 +782,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 			}
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("",e);
+			log.info("",e);
 			reconnect();
 		}
 		return false;
@@ -794,8 +793,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 			zk.setData(nodePath, data.getBytes("utf-8"), -1);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("",e);
+			log.info("",e);
 			reconnect();
 		}
 		return false;
@@ -813,7 +811,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 				return s.getPzxid();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.info("",e);
 			reconnect();
 		} 
 
@@ -830,7 +828,7 @@ public class ZkManagerImpl implements Watcher,ZkManager {
 			try {
 			zk=new ZooKeeper(this.zkConnectInfo.getConnectStr(), this.zkConnectInfo.getTimeout(),this);
 			}catch (Exception e) {
-				e.printStackTrace();
+				log.info("",e);
 				zk=null;
 			}
 		}

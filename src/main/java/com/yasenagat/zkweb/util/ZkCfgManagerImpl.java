@@ -282,7 +282,7 @@ public class ZkCfgManagerImpl implements InitializingBean,ZkCfgManager {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			log.info("whereSq={}",whereSql);
+			log.debug("whereSq={}",whereSql);
 			if(whereSql==null||whereSql.isEmpty()) {
 				ps = getConnection().prepareStatement("SELECT * FROM ZK limit ?,?");
 			}else {

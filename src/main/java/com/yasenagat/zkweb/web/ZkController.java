@@ -71,7 +71,7 @@ public class ZkController implements DisposableBean{
 	public @ResponseBody String queryZKOk(Model model,@RequestParam(required=true) String cacheId){
 		String exmsg="<font color='red'>Disconnected Or Exception</font>";
 		try {
-			if(ZkCache.get(cacheId).getData("/",false)!=null) {
+			if(ZkCache.get(cacheId)!=null&&ZkCache.get(cacheId).getData("/",false)!=null) {
 				//log.info("cacheId[{}] : {}",cacheId,"Connected");
 				return "<font color='blue'>Connected</font>";
 			}
@@ -80,8 +80,9 @@ public class ZkController implements DisposableBean{
 				return exmsg;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("cacheId[{}] : {}",cacheId,"Disconnected Or Exception");
+			//e.printStackTrace();
+			log.info("",e);
+			log.warn("cacheId[{}] : {}",cacheId,"Disconnected Or Exception");
 		}
 		
 		return exmsg;
@@ -102,7 +103,7 @@ public class ZkController implements DisposableBean{
 			response.addHeader("Access-Control-Allow-Origin", "*");
 			return result;
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.info("",e);
 		}
 		
 		return Collections.emptyList();
@@ -168,8 +169,8 @@ public class ZkController implements DisposableBean{
 			log.info("data:{}",data);
 			return ZkCache.get(cacheId).setData(path, data)==true ? "保存成功" : "保存失败";
 		} catch (Exception e) {
-			log.info("Error : {}",e.getMessage());
-			e.printStackTrace();
+			//log.info("Error : {}",e.getMessage());
+			log.warn("",e);
 			return "保存失败! Error : " +e.getMessage();
 		}
 		
@@ -187,8 +188,8 @@ public class ZkController implements DisposableBean{
 			log.info("nodeName:{}",nodeName);
 			return ZkCache.get(cacheId).createNode(path, nodeName, "")==true ? "保存成功" : "保存失败";
 		} catch (Exception e) {
-			log.info("Error : {}",e.getMessage());
-			e.printStackTrace();
+			//log.info("Error : {}",e.getMessage());
+			log.warn("",e);
 			return "保存失败! Error : " +e.getMessage();
 		}
 		
@@ -204,8 +205,8 @@ public class ZkController implements DisposableBean{
 			log.info("path:{}",path);
 			return ZkCache.get(cacheId).deleteNode(path)==true ? "删除成功" : "删除失败";
 		} catch (Exception e) {
-			log.info("Error : {}",e.getMessage());
-			e.printStackTrace();
+			//log.info("Error : {}",e.getMessage());
+			log.warn("",e);
 			return "删除失败! Error : " +e.getMessage();
 		}
 		
