@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.yasenagat.zkweb</groupId>
 	<artifactId>zkWeb</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>v1.2.1</version>
 
 	<name>zkWeb</name>
@@ -29,31 +29,36 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-<!-- 				<configuration> -->
-<!-- 					从target打成war包时的过滤,基准目录是target/zkWeb-v1.1 下面已经过滤了,这里无需再次过滤 -->
-<!-- 					<packagingExcludes>resources/**</packagingExcludes> -->
-<!-- 					从target打成war包时的过滤 ,基准目录是${basedir}/src/main/webapp -->
-<!-- 					<warSourceExcludes>resources/**</warSourceExcludes> -->
-<!-- 					<webResources> -->
-<!-- 			            <resource> -->
-<!-- 			                <directory>src/main/resources/config/${package.environment}</directory> -->
-<!-- 			                <targetPath>WEB-INF/classes/config</targetPath> -->
-<!-- 			                <filtering>true</filtering> -->
-<!-- 			            </resource> -->
-<!-- 			            <resource> -->
-<!-- 			                <directory>${basedir}/src/main/webapp/resources</directory> -->
-<!-- 		                    注意此次必须要放在此目录下才能被访问到jsp -->
-<!-- 			                <targetPath>WEB-INF/classes/resources/</targetPath>  -->
-<!-- 			                <includes> -->
-<!-- 			                    <include>**/**</include> -->
-<!-- 			                </includes> -->
-<!-- 			            </resource> -->
-<!-- 			        </webResources> -->
-<!-- 				</configuration> -->
-			</plugin>
+			<!-- <plugin> -->
+			<!-- <artifactId>maven-war-plugin</artifactId> -->
+			<!-- <version>3.2.2</version> -->
+			<!-- <configuration> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
 		</plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <!--打包Dockerfile-->
+            <resource>
+                <!-- 设定主资源目录  -->
+                <directory>${basedir}/src/main/docker</directory>
+
+                <!-- maven default生命周期，process-resources阶段执行maven-resources-plugin插件的resources目标处理主资源目下的资源文件时，只处理如下配置中包含的资源类型 -->
+                <includes>
+                    <include>*</include>
+                </includes>
+
+                <!-- maven default生命周期，process-resources阶段执行maven-resources-plugin插件的resources目标处理主资源目下的资源文件时，指定处理后的资源文件输出目录，默认是${build.outputDirectory}指定的目录 -->
+                <targetPath>${project.build.directory}</targetPath>
+
+                <!-- maven default生命周期，process-resources阶段执行maven-resources-plugin插件的resources目标处理主资源目下的资源文件时，是否对主资源目录开启资源过滤 -->
+                <filtering>true</filtering>
+
+            </resource>
+        </resources>
 	</build>
 	<dependencies>
 		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starters</artifactId> 
@@ -76,11 +81,10 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional> <!-- 这个需要为 true 热部署才有效 -->
 		</dependency>
-		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
+<!-- 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+		</dependency> -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
@@ -130,21 +134,8 @@
 			<groupId>com.fasterxml.jackson.jr</groupId>
 			<artifactId>jackson-jr-all</artifactId>
 		</dependency>
-		<!-- servlet -->
-<!-- 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>3.0-alpha-1</version>
-			<scope>provided</scope>
-		</dependency> -->
 		
-		<!-- JSP依赖 -->
-<!-- 		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-jasper</artifactId>
-			<scope>provided</scope> 
-		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency> -->
@@ -197,7 +188,6 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
 	</dependencies>
 
 </project>

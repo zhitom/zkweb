@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
-target
+target/*
+!target/zkWeb-*.jar
+!target/zkWeb-*.war
+!target/Dockerfile
 
 # Log file
 *.log
@@ -14,6 +17,8 @@ target
 # Package Files #
 *.jar
 *.war
+!target/*.jar
+!target/*.war
 *.nar
 *.ear
 *.zip
