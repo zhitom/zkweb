@@ -33,7 +33,7 @@ COPY zkWeb-v1.2.1.jar   /opt/app.jar
 EXPOSE 8099 8099
 
 # 配置环境变量 todo jvm优化参数可以设置这里
-ENV JAVA_OPTS='-Xmx4096m -Xms4096m ' APP_OPTS=''
+#ENV JAVA_OPTS='-Xmx4096m -Xms4096m ' APP_OPTS=''
 
 # 配置容器启动后执行的命令
 ENTRYPOINT java $JAVA_OPTS -server -Dfile.encoding=UTF-8 -Duser.language=zh -Duser.region=CN -Djava.security.egd=file:/dev/./urandom -jar /opt/app.jar $APP_OPTS
